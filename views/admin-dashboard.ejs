@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin DashBoard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/customer-dashboard.css" />
+  </head>
+  <body>
+    <div class="left-navigation">
+      <div class="top-logo">
+        <img class="logo" src="/images/sign-up-title-logo.svg" alt="" />
+        <h2 class="logo-txt">Insurance </h2>
+      </div>
+      <div class="option-btns">
+        <button class="dashboard-btn btn-font press-btn">
+          <img
+            src="https://img.icons8.com/material-rounded/24/000000/dashboard-layout.png"
+          />
+
+          Dashboard
+        </button>
+        <button class="policies-btn btn-font">
+          <img
+            src="https://img.icons8.com/external-smashingstocks-mixed-smashing-stocks/24/000000/external-Policy-human-resources-smashingstocks-mixed-smashing-stocks.png"
+          />
+
+          Customers
+        </button>
+        <button class="apply-policies-btn btn-font">
+          <img src="https://img.icons8.com/ios/24/000000/set-as-resume.png" />
+          Approve Profile
+        </button>
+        <button class="history-btn btn-font">
+          <img src="https://img.icons8.com/windows/24/000000/story-time.png" />
+
+          Pending Policies
+        </button>
+        <button class="ask-qs-btn btn-font">
+          <img
+            src="https://img.icons8.com/material-rounded/24/000000/ask-question.png"
+          />
+
+          Solve Queary
+        </button>
+        <button class="log-out-btn btn-font">
+          <img
+            src="https://img.icons8.com/external-kmg-design-detailed-outline-kmg-design/24/000000/external-log-out-user-interface-kmg-design-detailed-outline-kmg-design.png"
+          />
+
+          Log Out
+        </button>
+      </div>
+    </div>
+    <h2 class="hello-txt">Hello <%=admin.name%> </h2>
+    <button class="notification-btn">
+      <img src="images/bell-icon.png" alt="" />
+    </button>
+    <h2 class="profile-name"><%= admin.name %></h2>
+    <button class="profile-btn">
+      <img src="https://img.icons8.com/doodle/48/000000/user-male-circle.png" />
+    </button>
+    <!-- ------------------DASHBOARD WINDOW-------------------------------------- -->
+    
+    <div class="right-dashboard dashbord-div">
+      <h2 class="due-txt">Admin Dashboard</h2>
+      <div class="prem-due-div">
+        <div class="txt-div">
+  
+          <h2 class="txt-font">Total Active User: <%= customers.length  %> </h2>
+          <h2 class="txt-font">Pending Application:<%=customers.filter(function(value){
+    return value.approved === false;}).length%></h2>
+          <h2 class="txt-font">Pending Policies:
+            <% let pollices=0%>
+            <% for(cus of customers){ %>
+              <% pollices+=cus.policy.filter(pol=> pol.approved==false).length %> 
+              <% } %> 
+              <%=pollices %>  
+          </h2>
+        </div>
+      </div>
+      
+    </div>
+
+    <!-- --------------------------DashBoard End--------------------------------- -->
+
+    <!-- ------------------Customers------------------ -->
+    <div class="right-dashboard dash your-policy hide">
+      <h2 class="due-txt">Customers You Have</h2>
+      <div class="policy-div">
+        <div class="element">
+          <h2 class="policy-name txt-font">Customer Name</h2>
+          <h2 class="premium txt-font">Policy Hold</h2>
+          <h2 class="premium txt-font">Query</h2>
+        </div>
+        <% for(let cus of customers) {%> 
+          <% if(cus.approved){ %> 
+          <div class="element">
+            <h2 class="policy-name txt-font"><%= cus.name %> </h2>
+            <h2 class="premium txt-font"><%= cus.policy.length %> </h2>
+            <h2 class="premium txt-font"><%=cus.question.length%></h2>
+          </div>
+          <% } %> 
+          <%}  %> 
+
+        
+      </div>
+    </div>
+
+    <!-- --------------------Policy End------------------------------- -->
+    <!-- -----------------------------Approve Profile-------------------------------------- -->
+    <div class="right-dashboard show-policy hide">
+      <h2 class="due-txt txt-font">New Applications</h2>
+      <div class="policy-div">
+        <div class="element">
+          <h2 class="policy-name txt-font">Name</h2>
+          <h2 class="premium txt-font">Download Document</h2>
+          <h2 class="premium txt-font">Approve</h2>
+        </div>
+        <% for(let cus of customers) {%> 
+          <% if(!cus.approved){ %> 
+            <form method="post" action="/admin/<%=admin._id%>/<%=cus._id%>?_method=PATCH" class="element">
+              <h2 class="policy-name txt-font">Soyeb </h2>
+              <a class="apply-btn txt-font" href="">Download</a>
+              <button class="apply-btn txt-font" >Approve</button>
+          </form>   
+          <% } %> 
+          <%}  %> 
+                 
+      </div>
+    </div>
+    <!-- -------------apply policies end---------------------- -->
+    <!-- -----------------------------Aprove Policy-------------------------------------- -->
+    <div class="right-dashboard show-history hide">
+      <h2 class="due-txt txt-font">Pending Policies</h2>
+      <div class="policy-div">
+        <div class="element">
+          <h2 class="policy-name txt-font">Name</h2>
+          <h2 class="premium txt-font">Applied Policies</h2>
+          <h2 class="premium txt-font">Approve</h2>
+        </div>
+          <% for(cust of customers){ %> 
+            <% for(policy of cust.policy) {%>
+              <% if(!policy.approved){ %>  
+            <form method="post" action="/admin/<%=admin._id%>/<%=cust._id %>/<%=policy._id%>?_method=PATCH" class="element">
+                <h2 class="policy-name txt-font"><%=cust.name%></h2>
+                <h2 class="policy-name txt-font"><%=policy.name%></h2>
+                <button class="apply-btn txt-font" >Approve</button>
+            </form> 
+            <% } %>
+            <% } %>  
+            <% } %>        
+      </div>
+    </div>
+   
+   
+  
+    <!-- -------------Approve Policy---------------------- -->
+
+    <!-- --------------------------Solve Question----------------------------- -->
+    <div class="right-dashboard ask-qs hide">
+      <h2 class="due-txt txt-font">Queries</h2>
+      <div class="policy-div">
+        <div class="element">
+          <h2 class="policy-name txt-font">Name</h2>
+          <h2 class="premium txt-font">Queary</h2>
+          <h2 class="premium txt-font">Solve</h2>
+        </div>
+          <% for(cust of customers){ %> 
+            <% for(question of cust.question) {%>
+              
+            <form method="post" action="/admin/<%=cust._id%>/<%=cust._id %>/<%=policy._id%>?_method=PATCH" class="element">
+                <h2 class="policy-name txt-font"><%=cust.name%></h2>
+                <h2 class="policy-name txt-font"><%=question.qs%></h2>
+                
+                <button class="apply-btn txt-font" >Solve</button>
+            </form> 
+            <% } %>
+            <% } %>  
+      </div>
+    </div>
+    <!-- -----------------Ask Question End----------------------- -->
+    <div class="right-dashboard logout-div hide">
+      <h2 class="due-txt txt-font">Are You Sure You Want to Logout ?</h2>
+      <button class="log-out-last" onclick="location.href='/'">Log Out</button>
+    </div>
+  </body>
+  <script src="/js/customer-dashboard.js"></script>
+</html>
